@@ -54,12 +54,14 @@ func rangeHandler(w http.ResponseWriter, r *http.Request) {
 
 	respData := data[left:right+1]
 
-	w.Header().Set("Content-Range", fmt.Sprint("bytes %d-%d/%d", left, right, len(data)))
+	w.Header().Set("Content-Range", fmt.Sprintf("bytes %d-%d/%d", left, right, len(data)))
 	w.WriteHeader(http.StatusPartialContent)
 	w.Write([]byte(respData))
 }
 
 func main() {
 	http.HandleFunc("/range", rangeHandler)
-	http.ListenAndServe(":9090", nil)
+	if err := http.ListenAndServe(":9090", nil); err != nil {
+		fmt.Printf("starting server failed: %s\n", err.Error())
+	}
 }
